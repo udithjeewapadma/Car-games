@@ -13,17 +13,19 @@ class MainActivity : AppCompatActivity(), GameTask {
     lateinit var restartBtn: Button
     lateinit var mGameView: GameView
     lateinit var score: TextView
+    lateinit var highScoreTextView: TextView
     var currentScore: Int = 0
+    private var highScore = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         startBtn = findViewById(R.id.startBtn)
         restartBtn = findViewById(R.id.restartBtn)
         rootLayout = findViewById(R.id.rootLayout)
         score = findViewById(R.id.score)
+        highScoreTextView = findViewById(R.id.highScore)
         mGameView = GameView(this, this)
 
         // Set click listeners
@@ -38,6 +40,7 @@ class MainActivity : AppCompatActivity(), GameTask {
         // Initially, only start button and score are visible
         restartBtn.visibility = View.GONE
         score.visibility = View.GONE
+        highScoreTextView.visibility = View.GONE
     }
 
     private fun startGame() {
@@ -49,10 +52,12 @@ class MainActivity : AppCompatActivity(), GameTask {
         startBtn.visibility = View.GONE
         restartBtn.visibility = View.GONE
         score.visibility = View.GONE
+        highScoreTextView.visibility = View.GONE
 
         // Reset score
         currentScore = 0
     }
+
     private fun restartGame() {
         // Remove the current instance of GameView
         rootLayout.removeView(mGameView)
@@ -64,15 +69,21 @@ class MainActivity : AppCompatActivity(), GameTask {
         startGame()
     }
 
-
     override fun closeGame(mScore: Int) {
         // Update score and show buttons
         currentScore = mScore
         score.text = "Score : $currentScore"
+
+        // Update high score if necessary
+        if (currentScore > highScore) {
+            highScore = currentScore
+            highScoreTextView.text = "High Score : $highScore"
+        }
+
         rootLayout.removeView(mGameView)
         startBtn.visibility = View.VISIBLE
         restartBtn.visibility = View.VISIBLE
         score.visibility = View.VISIBLE
+        highScoreTextView.visibility = View.VISIBLE
     }
 }
-
